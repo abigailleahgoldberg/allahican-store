@@ -1,25 +1,9 @@
 import './style.css';
 
-// AllahiCan Product data
 const PRODUCTS = {
-  tee: {
-    id: '422980217',
-    name: 'AllahiCan Basic Tee',
-    price: 30.00,
-    image: 'https://files.cdn.printful.com/files/a82/a82250a249cf968e5c826cda7bde8f5c_preview.png'
-  },
-  tank: {
-    id: '422980731',
-    name: 'AllahiCan Black Tank',
-    price: 27.00,
-    image: 'https://files.cdn.printful.com/files/9e1/9e133533eabc4181213fcea3e7540bfe_preview.png'
-  },
-  mat: {
-    id: '422980859',
-    name: 'AllahiCan Prayer Mat',
-    price: 35.00,
-    image: 'https://files.cdn.printful.com/files/a82/a82250a249cf968e5c826cda7bde8f5c_preview.png'
-  }
+  tee: { id: '422980217', name: 'AllahiCan Basic Tee', price: 30.00, image: 'https://files.cdn.printful.com/files/a82/a82250a249cf968e5c826cda7bde8f5c_preview.png' },
+  tank: { id: '422980731', name: 'AllahiCan Black Tank', price: 27.00, image: 'https://files.cdn.printful.com/files/9e1/9e133533eabc4181213fcea3e7540bfe_preview.png' },
+  mat: { id: '422980859', name: 'AllahiCan Prayer Mat', price: 35.00, image: 'https://files.cdn.printful.com/files/a82/a82250a249cf968e5c826cda7bde8f5c_preview.png' }
 };
 
 const VARIANTS = {
@@ -50,7 +34,26 @@ function updateCartDisplay() {
   }
 }
 
+async function checkout() {
+  const response = await fetch('/api/create-checkout', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ items: cart, success_url: '/shop/success', cancel_url: '/shop' })
+  });
+  const { url } = await response.json();
+  window.location = url;
+}
+
+window.checkout = checkout;
+
 document.addEventListener('DOMContentLoaded', () => {
+    const cartIcon = document.getElementById('cart-container');
+    if (cartIcon) {
+        cartIcon.addEventListener('click', () => {
+             window.location.href = '/shop/cart';
+        });
+    }
+
   document.querySelectorAll('.buy-button').forEach(button => {
     button.addEventListener('click', (e) => {
       const card = e.target.closest('.product-card');
